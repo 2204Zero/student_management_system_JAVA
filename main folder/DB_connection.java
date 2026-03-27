@@ -1,6 +1,7 @@
 import java.sql.Connection;
 import java.sql.DriverManager;
-
+ import java.sql.PreparedStatement;
+ 
 public class DB_connection {
     public static Connection getConnection() {
         Connection conn = null;
@@ -19,4 +20,27 @@ public class DB_connection {
 
         return conn;
     }
+
+   
+
+public static void addStudent(int id, String name, int age, String course) {
+    try {
+        Connection conn = getConnection();
+
+        String query = "INSERT INTO students VALUES (?, ?, ?, ?)";
+        PreparedStatement ps = conn.prepareStatement(query);
+
+        ps.setInt(1, id);
+        ps.setString(2, name);
+        ps.setInt(3, age);
+        ps.setString(4, course);
+
+        ps.executeUpdate();
+
+        System.out.println("Student added successfully!");
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
 }
