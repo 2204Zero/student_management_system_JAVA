@@ -1,7 +1,7 @@
 import java.sql.Connection;
 import java.sql.DriverManager;
 
-public class DBConnection {
+public class DB_connection {
     public static Connection getConnection() {
         Connection conn = null;
 
@@ -9,7 +9,7 @@ public class DBConnection {
             conn = DriverManager.getConnection(
                 "jdbc:mysql://localhost:3306/student_management",
                 "root",
-                "your_password"
+                "Maya@1979"
             );
             System.out.println("Connected to database!");
         } catch (Exception e) {
