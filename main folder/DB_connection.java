@@ -12,7 +12,7 @@ public class DB_connection {
             conn = DriverManager.getConnection(
                 "jdbc:mysql://localhost:3306/student_management",
                 "root",
-                "Maya@1979"
+                "Workbench_password"
             );
             System.out.println("Connected to database!");
         } catch (Exception e) {
