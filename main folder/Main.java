@@ -11,7 +11,8 @@ public class Main {
             System.out.println("3. Search Student");
             System.out.println("4. Delete Student");
             System.out.println("5. Update Student");
-            System.out.println("6. Exit");
+            System.out.println("6. Add Fees");
+            System.out.println("7. Exit");
 
             System.out.print("Enter choice: ");
             int choice = sc.nextInt();
@@ -77,13 +78,25 @@ public class Main {
                     break;
 
                 case 6:
+                    System.out.print("Enter Student ID: ");
+                    int sid = sc.nextInt();
+
+                    System.out.print("Enter Total Fees: ");
+                    double total = sc.nextDouble();
+
+                    System.out.print("Enter Paid Amount: ");
+                    double paid = sc.nextDouble();
+
+                    DB_connection.addFees(sid, total, paid);
+                    break;
+
+                case 7:
                     System.out.println("Exiting...");
                     return;
 
                 default:
                     System.out.println("Invalid choice");
             }
-            System.out.println("--------------------------------------------");
         }
     }
 }
