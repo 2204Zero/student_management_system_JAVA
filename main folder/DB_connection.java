@@ -153,6 +153,25 @@ public static boolean studentExists(int id) {
     return false;
 }
 
+public static boolean feesExists(int studentId) {
+    try {
+        Connection conn = getConnection();
+
+        String query = "SELECT * FROM fees WHERE student_id = ?";
+        PreparedStatement ps = conn.prepareStatement(query);
+
+        ps.setInt(1, studentId);
+
+        ResultSet rs = ps.executeQuery();
+
+        return rs.next();
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return false;
+}
+
 public static void updateStudent(int id, String name, int age, String course) {
     try {
         Connection conn = getConnection();
@@ -181,15 +200,19 @@ public static void updateStudent(int id, String name, int age, String course) {
 public static void addFees(int studentId, double totalFees, double paidAmount) {
     try {
         Connection conn = getConnection();
-        //  Check 1: student exists
+
         if (!studentExists(studentId)) {
             System.out.println("Student does not exist!");
             return;
         }
 
-        //  Check 2: fees already exists
         if (feesExists(studentId)) {
-            System.out.println("Fees already added for this student!");
+            System.out.println("Fees record already exists for this student!");
+            return;
+        }
+
+        if (paidAmount > totalFees) {
+            System.out.println("Paid amount cannot exceed total fees!");
             return;
         }
 
@@ -205,30 +228,101 @@ public static void addFees(int studentId, double totalFees, double paidAmount) {
 
         ps.executeUpdate();
 
-        System.out.println("Fees record added!");
+        System.out.println("Fees record added successfully!");
 
     } catch (Exception e) {
         e.printStackTrace();
     }
 }
 
-public static boolean feesExists(int studentId) {
+public static void payFees(int studentId, double amount) {
     try {
         Connection conn = getConnection();
 
-        String query = "SELECT * FROM fees WHERE student_id = ?";
-        PreparedStatement ps = conn.prepareStatement(query);
+        if (!studentExists(studentId)) {
+            System.out.println("Student does not exist!");
+            return;
+        }
 
-        ps.setInt(1, studentId);
+        if (!feesExists(studentId)) {
+            System.out.println("No fees record found for this student!");
+            return;
+        }
 
-        ResultSet rs = ps.executeQuery();
+        String selectQuery = "SELECT total_fees, paid_amount FROM fees WHERE student_id = ?";
+        PreparedStatement ps1 = conn.prepareStatement(selectQuery);
+        ps1.setInt(1, studentId);
 
-        return rs.next();
+        ResultSet rs = ps1.executeQuery();
+
+        if (rs.next()) {
+            double totalFees = rs.getDouble("total_fees");
+            double currentPaid = rs.getDouble("paid_amount");
+
+            double newPaid = currentPaid + amount;
+
+            if (newPaid > totalFees) {
+                System.out.println("Payment would exceed total fees!");
+                return;
+            }
+
+            double newPending = totalFees - newPaid;
+
+            String updateQuery = "UPDATE fees SET paid_amount = ?, pending_amount = ? WHERE student_id = ?";
+            PreparedStatement ps2 = conn.prepareStatement(updateQuery);
+
+            ps2.setDouble(1, newPaid);
+            ps2.setDouble(2, newPending);
+            ps2.setInt(3, studentId);
+
+            ps2.executeUpdate();
+
+            System.out.println("Payment successful!");
+            System.out.println("Updated Fee Details:");
+            System.out.println("Total Fees: " + totalFees);
+            System.out.println("Paid Amount: " + newPaid);
+            System.out.println("Pending Amount: " + newPending);
+        }
 
     } catch (Exception e) {
         e.printStackTrace();
     }
-    return false;
+}
+
+public static void viewFees(int studentId) {
+    try {
+        Connection conn = getConnection();
+
+        if (!studentExists(studentId)) {
+            System.out.println("Student does not exist!");
+            return;
+        }
+
+        if (!feesExists(studentId)) {
+            System.out.println("No fees record found for this student!");
+            return;
+        }
+
+        String query = "SELECT total_fees, paid_amount, pending_amount FROM fees WHERE student_id = ?";
+        PreparedStatement ps = conn.prepareStatement(query);
+        ps.setInt(1, studentId);
+
+        ResultSet rs = ps.executeQuery();
+
+        if (rs.next()) {
+            double total = rs.getDouble("total_fees");
+            double paid = rs.getDouble("paid_amount");
+            double pending = rs.getDouble("pending_amount");
+
+            System.out.println("Fee Details for Student ID: " + studentId);
+            System.out.println("Total Fees: " + total);
+            System.out.println("Paid Amount: " + paid);
+            System.out.println("Pending Amount: " + pending);
+        }
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
 }
 }
 

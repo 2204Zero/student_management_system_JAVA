@@ -4,15 +4,17 @@ public class Main {
     public static void main(String[] args) {
 
         Scanner sc = new Scanner(System.in);
-
+    
         while (true) {
             System.out.println("\n1. Add Student");
             System.out.println("2. View Students");
             System.out.println("3. Search Student");
             System.out.println("4. Delete Student");
             System.out.println("5. Update Student");
-            System.out.println("6. Add Fees");
-            System.out.println("7. Exit");
+            System.out.println("6. Add Initial Fees");
+            System.out.println("7. Pay Fees");
+            System.out.println("8. View Fees");
+            System.out.println("9. Exit");
 
             System.out.print("Enter choice: ");
             int choice = sc.nextInt();
@@ -84,13 +86,30 @@ public class Main {
                     System.out.print("Enter Total Fees: ");
                     double total = sc.nextDouble();
 
-                    System.out.print("Enter Paid Amount: ");
+                    System.out.print("Enter Initial Paid Amount: ");
                     double paid = sc.nextDouble();
 
                     DB_connection.addFees(sid, total, paid);
                     break;
 
                 case 7:
+                    System.out.print("Enter Student ID: ");
+                    int payId = sc.nextInt();
+
+                    System.out.print("Enter Payment Amount: ");
+                    double amount = sc.nextDouble();
+
+                    DB_connection.payFees(payId, amount);
+                    break;
+
+                case 8:
+                    System.out.print("Enter Student ID to view fees: ");
+                    int viewId = sc.nextInt();
+
+                    DB_connection.viewFees(viewId);
+                    break;
+
+                case 9:
                     System.out.println("Exiting...");
                     return;
 
