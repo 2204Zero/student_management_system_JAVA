@@ -29,4 +29,10 @@ CREATE TABLE marks (
     FOREIGN KEY (student_id) REFERENCES students(id)
 );
 
-SELECT * from students;
+SELECT *FROM students;
+SELECT *FROM fees;
+
+DELETE FROM fees WHERE student_id = 2;
+
+DELETE FROM students WHERE id = 2;
+SELECT *FROM students;
